@@ -1,0 +1,6 @@
+[] dfa for other keywords
+[] operators dfa
+[] number not in the first place in id
+[] constant strings and character fix
+
+
