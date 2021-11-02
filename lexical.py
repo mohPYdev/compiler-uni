@@ -19,8 +19,21 @@ source_text = 'int main(){  int n,i,m=0,flag=0;    printf ("Enter the number to 
 tokens = []
 type_token =[]
 states = [
-        State(False , 'ID'),State(False , 'ID'),State(True , 'keyword'),
-        State(False , 'ID'),State(True , 'keyword'),State(True , 'ID')
+    State(False , 'ID'),State(False , 'ID'),State(True , 'keyword'),State(False , 'ID'),State(True , 'keyword'),State(True , 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),
+    State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),
+    State(True, 'keyword'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),
+    State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(True, 'keyword'),
+    State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),
+    State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),
+    State(False, 'ID'),State(False, 'ID'),State(False, 'ID'),State(True, 'keyword'),State(False, 'ID'),State(False, 'ID'),
+    State(False, 'ID'),State(True, 'keyword')
     ]
 
 toID = {x : states[5] for x in LETTER_NUMBER}
