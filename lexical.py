@@ -1,10 +1,13 @@
 import string
 
 LETTER_NUMBER = [x for x in string.ascii_letters] + [str(x) for x in range(10)]
-OPERATORS = [")" "(" ":" ',' ';' '{' '}' '=' '<' '>' '==' '+' '++' '-' '--' '*' '/' '!=' '%' '&&' '||' '!' ]
+OPERATORS = [")" "(" ":" ',' ';' '{' '}' '=' '<' '>' '+' '-' '*' '/' '%' '&' '|' '!' ]
 # print(LETTER_NUMBER)
 
 special_ops = ['+' , '-' , '=' , '!' , '&' , '|']
+
+Number = ['0','1','2','3','4','5','6','7','8','9']
+
 def isDiff(nb):
     if nb not in LETTER_NUMBER :
         return True
@@ -17,7 +20,7 @@ class State:
         self.Ttype = Ttype
 
 # source_text = 'int main(){  int n,i,m=0,flag=0;    printf ("Enter the number to check prime:");   scanf("%d",&n);   m=n/2;   for (i=2;i<=m;i++)   {   if(n%i==0)   {   printf ("Number is not prime");   flag=1;   break;   }   }   if (flag==0)   printf ("Number is prime");    return 0;  }'  
-source_text = 'a++; c( a+b;'
+source_text = 'a=2222r22 a==2'
 states = [
     State(True , 'ID'),State(True , 'ID'),State(True , 'keyword'),State(True , 'ID'),State(True , 'keyword'),State(True , 'ID'),
     State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'keyword'),State(True, 'ID'),
@@ -44,7 +47,11 @@ type_token =[]
 dfa = {
     states[0] : dict(toID , **{'i': states[1] , 'b': states[6], 'c': states[11], 'd': states[25],
                 'e': states[31], 'f': states[35], 'l': states[42], 'r': states[46], 'w': states[52], 'p': states[57],
-                'v': states[63], 'm': states[67], 's': states[71] , ')':states[86] , }),
+                'v': states[63], 'm': states[67], 's': states[71], ')': states[86], '(': states[86], ':': states[86], 
+                ',': states[86], ';': states[86], '{': states[86], '}': states[86], '=': states[86], '<': states[86], 
+                '>': states[86], '+': states[86], '-': states[86], '*': states[86], '/': states[86], '%': states[86],
+                '&': states[86], '|': states[86], '!': states[86], '0': states[88], '1': states[88], '2': states[88],
+                '3': states[88], '4': states[88], '5': states[88], '6': states[88], '7': states[88], '8': states[88], '9': states[88] }),
     states[1] : dict( toID , **{'f' : states[2] , 'n': states[3]}),
     states[2] :  toID,
     states[3] : dict(toID , **{'t' : states[4]}),
@@ -130,7 +137,9 @@ dfa = {
     states[83] :  dict(toID , **{'n': states[84]}),
     states[84] :  dict(toID , **{'f': states[85]}),
     states[85] :  toID,
-    states[86] : {x : states[87] for x in special_ops}
+    states[86] : {x : states[87] for x in special_ops},
+    states[87] : {x : states[0] for x  in  LETTER_NUMBER},
+    states[88] : {x : states[88] for x in Number}
     } 
 
 s = states[0]
@@ -154,7 +163,14 @@ for c in source_text:
                 type_token.append(s.Ttype)
                 s = states[0]
                 token = ''
-            
+        elif s == states[88]:
+            token += c
+            # print('88')
+            if nb not in Number:
+                tokens.append(token)
+                type_token.append(s.Ttype)
+                s = states[0]
+                token = ''
 
         elif s.isFinal and isDiff(nb) :
             token += c
