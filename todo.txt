@@ -1,5 +1,5 @@
-[] dfa for other keywords
-[] operators dfa
+[x] dfa for other keywords
+[x] operators dfa
 [] number not in the first place in id
 [] constant strings and character fix
 
