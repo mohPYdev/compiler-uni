@@ -1,6 +1,7 @@
 [x] dfa for other keywords
 [x] operators dfa
-[] number not in the first place in id
-[] constant strings and character fix
-
+[x] number not in the first place in id
+[x] constant strings and character fix
+[x] letter number after special bug
+[] state not token not working   ->  (++a)
 

@@ -1,7 +1,7 @@
 import string
 
 LETTER_NUMBER = [x for x in string.ascii_letters] + [str(x) for x in range(10)]
-OPERATORS = [")" "(" ":" ',' ';' '{' '}' '=' '<' '>' '+' '-' '*' '/' '%' '&' '|' '!' ]
+OPERATORS = [")" , "(" , ":",  ',',  ';', '{', '}', '=', '<', '>', '+', '-', '*', '/', '%', '&', '|', '!' ]
 # print(LETTER_NUMBER)
 
 special_ops = ['+' , '-' , '=' , '!' , '&' , '|']
@@ -20,7 +20,7 @@ class State:
         self.Ttype = Ttype
 
 # source_text = 'int main(){  int n,i,m=0,flag=0;    printf ("Enter the number to check prime:");   scanf("%d",&n);   m=n/2;   for (i=2;i<=m;i++)   {   if(n%i==0)   {   printf ("Number is not prime");   flag=1;   break;   }   }   if (flag==0)   printf ("Number is prime");    return 0;  }'  
-source_text = 'a=2222r22 a==2'
+source_text = '(++a)'
 states = [
     State(True , 'ID'),State(True , 'ID'),State(True , 'keyword'),State(True , 'ID'),State(True , 'keyword'),State(True , 'ID'),
     State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'keyword'),State(True, 'ID'),
@@ -37,6 +37,7 @@ states = [
     State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'keyword'),State(True, 'ID'),
     State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'keyword'),State(True, 'ID'),State(True, 'ID'),
     State(True, 'ID'),State(True, 'keyword') , State(True , 'operator') , State(True , 'operator') , State(True,'Number'),
+    State(True , ''),State(True , ''), State(True , 'String')
     ]
 
 toID = {x : states[5] for x in LETTER_NUMBER}
@@ -51,7 +52,8 @@ dfa = {
                 ',': states[86], ';': states[86], '{': states[86], '}': states[86], '=': states[86], '<': states[86], 
                 '>': states[86], '+': states[86], '-': states[86], '*': states[86], '/': states[86], '%': states[86],
                 '&': states[86], '|': states[86], '!': states[86], '0': states[88], '1': states[88], '2': states[88],
-                '3': states[88], '4': states[88], '5': states[88], '6': states[88], '7': states[88], '8': states[88], '9': states[88] }),
+                '3': states[88], '4': states[88], '5': states[88], '6': states[88], '7': states[88], '8': states[88],
+                '9': states[88], '"': states[90] }),
     states[1] : dict( toID , **{'f' : states[2] , 'n': states[3]}),
     states[2] :  toID,
     states[3] : dict(toID , **{'t' : states[4]}),
@@ -138,10 +140,11 @@ dfa = {
     states[84] :  dict(toID , **{'f': states[85]}),
     states[85] :  toID,
     states[86] : {x : states[87] for x in special_ops},
-    states[87] : {x : states[0] for x  in  LETTER_NUMBER},
-    states[88] : {x : states[88] for x in Number}
+    states[87] : dict({x : states[0] for x  in  LETTER_NUMBER} , **{x : states[89] for x in special_ops}),
+    states[88] : dict({x : states[88] for x in Number} , **{x : states[89] for x in list(string.ascii_letters)}),
+    states[89] : {x : states[89] for x in LETTER_NUMBER},  # not a token
+    states[90] : dict({x : states[90] for x  in (LETTER_NUMBER + OPERATORS)} , **{'"' : states[91]}),
     } 
-
 s = states[0]
 token = ''
 nb = ''
@@ -163,14 +166,27 @@ for c in source_text:
                 type_token.append(s.Ttype)
                 s = states[0]
                 token = ''
-        elif s == states[88]:
-            token += c
-            # print('88')
-            if nb not in Number:
+        elif s == states[89]:
+            s = states[0]
+            token = ''
+        
+        elif s == states[87]:
+            if nb not in special_ops:
+                token += c
                 tokens.append(token)
                 type_token.append(s.Ttype)
-                s = states[0]
                 token = ''
+                s = states[0]
+
+        elif s == states[90]:
+            token += c
+        elif s == states[91]:
+            token += c
+            tokens.append(token)
+            type_token.append(s.Ttype)
+            token = ''
+            s = states[0]
+
 
         elif s.isFinal and isDiff(nb) :
             token += c
