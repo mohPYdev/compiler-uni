@@ -6,6 +6,8 @@ OPERATORS = [")" , "(" , ":",  ',',  ';', '{', '}', '=', '<', '>', '+', '-', '*'
 
 special_ops = ['+' , '-' , '=' , '!' , '&' , '|']
 
+not_special = [x for x in OPERATORS if x not in special_ops]
+
 Number = ['0','1','2','3','4','5','6','7','8','9']
 
 def isDiff(nb):
@@ -20,7 +22,15 @@ class State:
         self.Ttype = Ttype
 
 # source_text = 'int main(){  int n,i,m=0,flag=0;    printf ("Enter the number to check prime:");   scanf("%d",&n);   m=n/2;   for (i=2;i<=m;i++)   {   if(n%i==0)   {   printf ("Number is not prime");   flag=1;   break;   }   }   if (flag==0)   printf ("Number is prime");    return 0;  }'  
-source_text = '(++a)'
+source_text = '''int main(){
+int a=3;
+float b=5;
+int c=7;
+int d=a+c;
+for(int i=0;i<3;i++){
+}
+
+}'''
 states = [
     State(True , 'ID'),State(True , 'ID'),State(True , 'keyword'),State(True , 'ID'),State(True , 'keyword'),State(True , 'ID'),
     State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'keyword'),State(True, 'ID'),
@@ -37,7 +47,7 @@ states = [
     State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'keyword'),State(True, 'ID'),
     State(True, 'ID'),State(True, 'ID'),State(True, 'ID'),State(True, 'keyword'),State(True, 'ID'),State(True, 'ID'),
     State(True, 'ID'),State(True, 'keyword') , State(True , 'operator') , State(True , 'operator') , State(True,'Number'),
-    State(True , ''),State(True , ''), State(True , 'String')
+    State(True , ''),State(True , ''), State(True , 'String') , State(True , 'operator')
     ]
 
 toID = {x : states[5] for x in LETTER_NUMBER}
@@ -48,12 +58,12 @@ type_token =[]
 dfa = {
     states[0] : dict(toID , **{'i': states[1] , 'b': states[6], 'c': states[11], 'd': states[25],
                 'e': states[31], 'f': states[35], 'l': states[42], 'r': states[46], 'w': states[52], 'p': states[57],
-                'v': states[63], 'm': states[67], 's': states[71], ')': states[86], '(': states[86], ':': states[86], 
-                ',': states[86], ';': states[86], '{': states[86], '}': states[86], '=': states[86], '<': states[86], 
-                '>': states[86], '+': states[86], '-': states[86], '*': states[86], '/': states[86], '%': states[86],
+                'v': states[63], 'm': states[67], 's': states[71], ')': states[92], '(': states[92], ':': states[92], 
+                ',': states[92], ';': states[92], '{': states[92], '}': states[92], '=': states[86], '<': states[92], 
+                '>': states[92], '+': states[86], '-': states[86], '*': states[92], '/': states[92], '%': states[92],
                 '&': states[86], '|': states[86], '!': states[86], '0': states[88], '1': states[88], '2': states[88],
                 '3': states[88], '4': states[88], '5': states[88], '6': states[88], '7': states[88], '8': states[88],
-                '9': states[88], '"': states[90] }),
+                '9': states[88], '"': states[90]}),
     states[1] : dict( toID , **{'f' : states[2] , 'n': states[3]}),
     states[2] :  toID,
     states[3] : dict(toID , **{'t' : states[4]}),
@@ -80,7 +90,7 @@ dfa = {
     states[24] :  toID,
     states[25] :  dict(toID , **{'o': states[26]}),
     states[26] :  dict(toID , **{'u': states[27]}),
-    states[27] :  dict(toID , **{'b': states[28]}),
+    states[27] :  dict(toID , **{'b': states[28]}), 
     states[28] :  dict(toID , **{'l': states[29]}),
     states[29] :  dict(toID , **{'e': states[30]}),
     states[30] :  toID,
@@ -169,6 +179,13 @@ for c in source_text:
         elif s == states[89]:
             s = states[0]
             token = ''
+
+        elif s == states[92]:
+            token += c
+            tokens.append(token)
+            type_token.append(s.Ttype)
+            token = ''
+            s = states[0]
         
         elif s == states[87]:
             if nb not in special_ops:
