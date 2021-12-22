@@ -1,7 +1,10 @@
-[x] dfa for other keywords
-[x] operators dfa
-[x] number not in the first place in id
-[x] constant strings and character fix
-[x] letter number after special bug
-[] state not token not working   ->  (++a)
+[] design grammar
+[] left recursion & left factoring
+[] first & follow table
+
+[] finding terminals and non terminals
+[] number -> digits 
+[] @ for e
+[] parsing table
+[] tree
 

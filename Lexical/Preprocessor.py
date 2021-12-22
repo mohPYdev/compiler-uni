@@ -17,7 +17,7 @@ def Preprocessor(filename):
                 lines[lines.index(line)] = line.replace(line[line.index('//'):], '')
 
             if line.startswith('#include'):
-                Preprocessor(line.split()[1])
+                Preprocessor('./lexical/' + line.split()[1])
                 lines[lines.index(line)] = ""
 
 
@@ -32,10 +32,14 @@ def Preprocessor(filename):
                 for label in labels.keys():
                     if label in line:
                         lines[lines.index(line)] = line.replace(label, labels[label])
-    for line in lines:
-        print(line)
+    # for line in lines:
+    #     print(line)
+    with open('./lexical/cleanedSource.txt' , 'w') as file:
+        file.writelines(lines)
 
-Preprocessor("source.txt")
+
+if __name__ == '__main__':
+    Preprocessor("source.txt")
 
 
 

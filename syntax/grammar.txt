@@ -1,0 +1,65 @@
+program -> declList 
+declList ->  decl declList^
+declList^ ->  decl declList^ | e
+decl -> varDecl | funDecl
+
+---------------variable----------------------------
+
+varDecl -> typeSpec varDeclId ;
+varDeclId -> ID  
+typeSpec -> int | float | char | double
+typeSpec -> float
+typeSpec -> char
+
+
+
+-----------------function---------------------------
+
+funDecl -> typeSpec ID ( parms ) { stmt }
+parms -> parmList | e
+parmList -> varDecl parmList^
+parmList^ -> , varDecl parmList^ | e
+
+-------------------stmt-----------------------------
+
+stmt -> expStmt | compoundStmt | selectStmt | iterStmt | returnStmt | breakStmt
+expStmt -> exp ; | ;
+selectStmt -> if ( simpleExp ) { stmt } | if ( simpleExp ) { stmt } else { stmt }
+iterStmt -> while ( simpleExp ) { stmt } | for ( expStmt expStmt exp ) { stmt }
+returnStmt -> return ; | return exp ; 
+breakStmt -> break ;
+
+----------------------expr------------------------------------
+
+exp -> mutable = exp | mutable += exp | mutable −= exp  |  mutable ++ | mutable −− | simpleExp
+simpleExp -> andExp simpleExp'
+andExp -> unaryRelExp andExp'
+simpleExp' -> || andExp simpleExp' | e
+andExp' -> && unaryRelExp andExp' | e 
+unaryRelExp -> ! unaryRelExp | relExp 
+relExp -> minmaxExp relop minmaxExp | minmaxExp  
+relop -> <= | < | > | >= | == | !=
+
+
+minmaxExp -> sumExp minmaxExp'
+sumExp -> mulExp sumExp'
+sumop -> + | −
+mulExp -> unaryExp mulExp'
+minmaxExp' -> minmaxop sumExp minmaxExp' | e
+sumExp' -> sumop mulExp sumExp'| e
+mulExp' -> mulop unaryExp mulExp'| e
+mulop -> ∗ | / | %
+
+
+unaryExp -> unaryop unaryExp | factor 
+unaryop -> − | ∗ | ? 
+factor -> immutable | mutable 
+mutable -> ID | ID [ exp ] 
+immutable -> ( exp ) | call | constant 
+call -> ID ( args ) 
+args -> argList | e 
+argList -> exp argList'
+argList' -> , exp argList'| ϵ
+constant -> NUMCONST | CHARCONST | STRINGCONST | true | false
+
+
