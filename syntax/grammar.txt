@@ -1,7 +1,9 @@
 program -> declList 
 declList ->  decl declList^
-declList^ ->  decl declList^ | e
-decl -> varDecl | funDecl
+declList^ ->  decl declList^
+declList^ ->  @
+decl -> varDecl
+decl -> funDecl
 
 ---------------variable----------------------------
 
@@ -24,6 +26,7 @@ parmList^ -> , varDecl parmList^ | e
 
 stmt -> expStmt | compoundStmt | selectStmt | iterStmt | returnStmt | breakStmt
 expStmt -> exp ; | ;
+compoundStmt -> { localDecls stmtList }
 selectStmt -> if ( simpleExp ) { stmt } | if ( simpleExp ) { stmt } else { stmt }
 iterStmt -> while ( simpleExp ) { stmt } | for ( expStmt expStmt exp ) { stmt }
 returnStmt -> return ; | return exp ; 
