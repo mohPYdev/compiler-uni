@@ -1,10 +1,10 @@
 [] design grammar
-[] left recursion & left factoring
+[x] left recursion & left factoring
 [] first & follow table
 
 [] finding terminals and non terminals
 [] number -> digits 
 [] @ for e
-[] parsing table
+[x] parsing table
 [] tree
 
