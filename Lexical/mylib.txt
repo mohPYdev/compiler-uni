@@ -1,1 +1,4 @@
 #define seta int a=3
+#define setc int c=35
+
+

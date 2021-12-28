@@ -4,9 +4,6 @@ declList^ ->  decl declList^
 declList^ -> @
 decl -> varDecl
 decl -> funDecl
-
----------------variable----------------------------
-
 varDecl -> typeSpec varDeclId ;
 scopedVarDecl -> typeSpec varDeclList ;
 varDeclList -> varDeclInit varDeclList^
@@ -20,21 +17,12 @@ typeSpec -> int
 typeSpec -> float
 typeSpec -> char
 typeSpec -> double
-
-
-
-
------------------function---------------------------
-
 funDecl -> typeSpec ID ( parms ) stmt
 parms -> parmList
 parms -> @
 parmList -> varDecl parmList^
 parmList^ -> , varDecl parmList^ 
 parmList^ -> @
-
--------------------stmt-----------------------------
-
 stmt -> expStmt
 stmt -> compoundStmt
 stmt -> selectStmt
@@ -57,21 +45,18 @@ iterStmt -> for ( expStmt expStmt exp ) { stmt }
 returnStmt -> return ;
 returnStmt -> return exp ; 
 breakStmt -> break ;
-
-----------------------expr------------------------------------
-
 exp -> mutable = exp
 exp -> mutable += exp
-exp -> mutable −= exp
+exp -> mutable -= exp
 exp -> mutable ++
-exp -> mutable −−
+exp -> mutable --
 exp -> simpleExp
 simpleExp -> andExp simpleExp^
 andExp -> unaryRelExp andExp^
 simpleExp^ -> || andExp simpleExp^ 
 simpleExp^ -> @
 andExp^ -> && unaryRelExp andExp^
-andExp^ -> @ 
+andExp^ -> @
 unaryRelExp -> ! unaryRelExp
 unaryRelExp -> relExp 
 relExp -> minmaxExp relop minmaxExp
@@ -82,28 +67,24 @@ relop -> >
 relop -> >=
 relop -> ==
 relop -> !=
-
-
 minmaxExp -> sumExp minmaxExp^
 sumExp -> mulExp sumExp^
 sumop -> +
-sumop -> −
+sumop -> -
 mulExp -> unaryExp mulExp^
-minmaxExp^ -> minmaxop sumExp minmaxExp^
+minmaxExp^ -> sumExp minmaxExp^
 minmaxExp^ -> @
 sumExp^ -> sumop mulExp sumExp^
 sumExp^ -> @
 mulExp^ -> mulop unaryExp mulExp^
 mulExp^ -> @
-mulop -> ∗
+mulop -> *
 mulop -> /
 mulop -> %
-
-
 unaryExp -> unaryop unaryExp
 unaryExp -> factor 
-unaryop -> −
-unaryop -> ∗
+unaryop -> -
+unaryop -> *
 unaryop -> ? 
 factor -> immutable
 factor -> mutable 
@@ -114,7 +95,7 @@ immutable -> call
 immutable -> constant 
 call -> ID ( args ) 
 args -> argList
-args -> @ 
+args -> @
 argList -> exp argList^
 argList^ -> , exp argList^
 argList^ -> @
@@ -123,4 +104,3 @@ constant -> CHARCONST
 constant -> STRINGCONST
 constant -> true
 constant -> false
-

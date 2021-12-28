@@ -7,6 +7,7 @@ seta;
 float b=5;
 a += 5;
 b = a || b;
+setc;
 
 int c=7;
 int d=a+c;

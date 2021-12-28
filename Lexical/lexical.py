@@ -37,6 +37,8 @@ states = [
     State(True, 'ID'),State(True, 'keyword') , State(True , 'operator') , State(True , 'operator') , State(True,'Number'),
     State(True , ''),State(True , ''), State(True , 'String') , State(True , 'operator')
     ]
+print(len(states))
+
 def main():
 
     # read the file
@@ -232,4 +234,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    tokens , typeT = main()
+    # printing 
+    for i in range(len(tokens)):
+        print(tokens[i] , ' : ' , typeT[i])
+    

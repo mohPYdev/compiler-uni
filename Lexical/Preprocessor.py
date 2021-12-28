@@ -1,3 +1,5 @@
+import os
+
 labels = dict()
 
 def Preprocessor(filename):
@@ -9,23 +11,25 @@ def Preprocessor(filename):
             if line.startswith('#define'):
                 index = lines.index(line)
                 labels[line.split()[1]] = ' '.join(line.split()[2:])
-                lines.remove(line)
-                if len(lines) != 0:
-                    line = lines[index]
+                
+                # lines.remove(line)
+                lines[index]= ''
+                # if len(lines) != 0:
+                #     line = lines[index]
 
-            if '//' in line:
+            elif '//' in line:
                 lines[lines.index(line)] = line.replace(line[line.index('//'):], '')
 
-            if line.startswith('#include'):
+            elif line.startswith('#include'):
                 Preprocessor('./lexical/' + line.split()[1])
                 lines[lines.index(line)] = ""
 
 
 
-        if len(lines) == 0:
-            for label in labels.keys():
-                if label in line:
-                    line = line.replace(line, labels[label])
+        # if len(lines) == 0:
+        #     for label in labels.keys():
+        #         if label in line:
+        #             line = line.replace(line, labels[label])
 
         else:
             for line in lines:
@@ -34,12 +38,15 @@ def Preprocessor(filename):
                         lines[lines.index(line)] = line.replace(label, labels[label])
     # for line in lines:
     #     print(line)
+
     with open('./lexical/cleanedSource.txt' , 'w') as file:
         file.writelines(lines)
 
 
 if __name__ == '__main__':
-    Preprocessor("source.txt")
+    p =os.path.join(os.path.dirname(__file__) , 'source.txt')
+    # Preprocessor("source.txt")
+    Preprocessor(p)
 
 
 
