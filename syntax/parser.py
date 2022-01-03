@@ -1,11 +1,18 @@
-import sys , os
+import sys , os , uuid
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Lexical'))
 import lexical
+
+import graphviz
+dot = graphviz.Digraph('round-table', comment='The Round Table')  
+
 
 # get the tokens from lexical analyser
 tokens , token_type = lexical.main()
 
-TERMINALS = ['true', 'false' , 'NUMCONST' , 'CHARCONST' , 'STRINGCONST', '?','@','int' , 'float' , 'char' , 'double' , 'ID', 'Number' , 'if' , 'else' , 'while' , 'for' , 'break', 'continue' , 'case' , 'switch' , 'static' , 'return', ")" , "(" , ":",  ',',  ';', '{', '}', '=', '<', '>', '+', '-', '*', '/', '%', '&', '|', '!', '++','--','==','+=', '-=' , '||' , '&&', '[', ']' , '<=' , '>=' , '!=']
+
+
+
+TERMINALS = ['main','printf','true', 'false' ,  'CHARCONST' , 'String', '?','@','int' , 'float' , 'char' , 'double' , 'ID', 'Number' , 'if' , 'else' , 'while' , 'for' , 'break', 'continue' , 'case' , 'switch' , 'static' , 'return', ")" , "(" , ":",  ',',  ';', '{', '}', '=', '<', '>', '+', '-', '*', '/', '%', '&', '|', '!', '++','--','==', '*=','/=' ,'+=', '-=' , '||' , '&&', '[', ']' , '<=' , '>=' , '!=']
 NON_TERMINALS = []
 
 firsts = dict()
@@ -14,26 +21,10 @@ follows = dict()
 productions = dict()
 table = dict()
 input = str()
-# input = '''program -> declList 
-# declList ->  decl declList^
-# declList^ ->  decl declList^ 
-# declList^ -> @
-# decl -> varDecl
-# decl -> funDecl
-# varDecl -> int
-# funDecl -> float'''
-# input = '''E -> T E^
-#     E^ -> + T E^
-#     E^ -> @
-#     T -> F T^
-#     T^ -> * F T^
-#     T^ -> @
-#     F -> ( E )
-#     F -> int''' 
 
 def get_input():
     global input
-    x = os.path.join(os.path.dirname(__file__), 'actualGramm.txt')
+    x = os.path.join(os.path.dirname(__file__), 'grammar.txt')
     with open(x , 'r') as f:
         input = f.read()
 
@@ -53,7 +44,7 @@ def create_prods_dict():
             table[p[0]] = dict()
     
 def create_table():
-    for nonterminal in table.keys():
+    for nonterminal in productions.keys():
         rule = dict()
         # add the production related to this first in the table using the production dict 
         for res in productions[nonterminal]:
@@ -62,7 +53,7 @@ def create_table():
                     for f in follows[nonterminal]:
                         rule[f] = '@'
                 else:
-                    rule[res.split()[0]] = res
+                    rule[res.split()[0]] = res     
                     
             else:
                 for f in firsts[res.split()[0]]:
@@ -76,8 +67,66 @@ def create_table():
         table[nonterminal] = rule
 
 def parse():
-    pass
+    nodes = dict()
+    stack = []
+    stack.append('$')
+    stack.append('mainStatement')
+    nodes['mainStatement'] = str(uuid.uuid4())
+    dot.node(nodes['mainStatement'] , 'mainStatement')
 
+    tokens.append('$')
+    token_type.append('operator')
+
+    matched = ''
+    found = False
+    for i in range(len(tokens)):
+        found = False
+        while(not found):
+            print(stack)
+            if token_type[i] in ['keyword' , 'operator']:
+                if stack[-1] == tokens[i]:
+                    found = True
+                    stack.pop()
+                    matched += tokens[i]
+                else:
+                    n = stack.pop()
+                    try:
+                        prods = table[n][tokens[i]].split()
+                    except KeyError:
+                        return False
+                    for prod in reversed(prods):
+                        stack.append(prod)
+                   
+                    for prod in prods:
+                        nodes[prod] = str(uuid.uuid4())
+                        dot.node(nodes[prod], prod)
+                        dot.edge(nodes[n] , nodes[prod])
+
+                    if stack[-1] == '@':
+                        stack.pop()
+
+            else:
+                if stack[-1] == token_type[i]:
+                    found=  True
+                    stack.pop()
+                    matched += tokens[i]
+                    continue
+                else:
+                    n = stack.pop()
+                    try:
+                        prods = table[n][token_type[i]].split()
+                    except KeyError:
+                        return False
+                    for prod in reversed(prods):
+                        stack.append(prod) 
+                    for prod in prods:          
+                        nodes[prod] = str(uuid.uuid4())
+                        dot.node(nodes[prod], prod)
+                        dot.edge(nodes[n] , nodes[prod])
+                    if stack[-1] == '@':
+                        stack.pop()
+    return True
+  
 def draw_tree():
     pass
 
@@ -103,8 +152,7 @@ def first(nonterminal):
                     firsts[nonterminal] = set.union(firsts[nonterminal],first(sides[1].split()[0]))    
     return firsts[nonterminal]
 
-def follow(nonterminal):       
-                             
+def follow(nonterminal):                                  
     for line in input.splitlines():
         line = line.strip()
         lines = line.split('->')
@@ -147,11 +195,28 @@ def main():
     for nonterminal in NON_TERMINALS:       
         first(nonterminal)
 
-    follows['program']= { '$' }
-    # follows['E'] = { '$' }
+    follows['mainStatement']= { '$' }
     for nonterminal in NON_TERMINALS:
         follow(nonterminal)
 
+    # change the firsts and follows to arrays
+    for key in firsts.keys():
+        firsts[key] = list(firsts[key])
+    for key in follows.keys():
+        follows[key] = list(follows[key])
+
+    create_prods_dict()
+    create_table()
+    # print(tokens)
+    # print(token_type)
+    # print()
+
+    
+    print(parse())
+    dot.render(directory='doctest-output', view=True)
+    # print(table['declList^'])
+    # print(firsts['declList'])
+    # print(follows['declList'])
 
 
 if __name__ == '__main__':

@@ -37,7 +37,6 @@ states = [
     State(True, 'ID'),State(True, 'keyword') , State(True , 'operator') , State(True , 'operator') , State(True,'Number'),
     State(True , ''),State(True , ''), State(True , 'String') , State(True , 'operator')
     ]
-print(len(states))
 
 def main():
 

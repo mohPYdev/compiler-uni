@@ -1,10 +1,9 @@
-[] design grammar
+[x] design grammar
 [x] left recursion & left factoring
-[] first & follow table
-
-[] finding terminals and non terminals
-[] number -> digits 
-[] @ for e
+[x] first & follow table
+[x] finding terminals and non terminals
+[x] @ for e
 [x] parsing table
-[] tree
-
+[x] change firsts {set() ,set() , ... } to firtst{ list(), list() }
+[x] number -> digits  ( baghie terminal ha)
+[x] tree

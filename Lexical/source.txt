@@ -2,15 +2,9 @@
 #define start int main()
 start
 {
-//im writing c compiler
-seta;
-float b=5;
-a += 5;
-b = a || b;
-setc;
-
-int c=7;
-int d=a+c;
-for(int i=0;i<3;i++){
-}
+    int a = 8 ;
+    for (int i = 0 ; i < 10; i++){
+        a++;
+        int c = a + b;
+    }
 }

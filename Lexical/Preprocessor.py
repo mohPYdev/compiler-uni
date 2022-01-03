@@ -31,11 +31,11 @@ def Preprocessor(filename):
         #         if label in line:
         #             line = line.replace(line, labels[label])
 
-        else:
-            for line in lines:
-                for label in labels.keys():
-                    if label in line:
-                        lines[lines.index(line)] = line.replace(label, labels[label])
+    
+        for line in lines:
+            for label in labels.keys():
+                if label in line:
+                    lines[lines.index(line)] = line.replace(label, labels[label])
     # for line in lines:
     #     print(line)
 

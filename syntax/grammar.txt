@@ -1,126 +1,63 @@
-program -> declList 
-declList ->  decl declList^
-declList^ ->  decl declList^ 
-declList^ -> @
-decl -> varDecl
-decl -> funDecl
-
----------------variable----------------------------
-
-varDecl -> typeSpec varDeclId ;
-scopedVarDecl -> typeSpec varDeclList ;
-varDeclList -> varDeclInit varDeclList^
-varDeclList^ -> , varDeclInit varDeclList^
-varDeclList^ -> @
-varDeclInit -> varDeclId 
-varDeclInit -> varDeclId = simpleExp
-varDeclId -> ID 
-varDeclId -> ID [ NUMCONST ]
-typeSpec -> int
-typeSpec -> float
-typeSpec -> char
-typeSpec -> double
-
-
-
-
------------------function---------------------------
-
-funDecl -> typeSpec ID ( parms ) stmt
-parms -> parmList
-parms -> @
-parmList -> varDecl parmList^
-parmList^ -> , varDecl parmList^ 
-parmList^ -> @
-
--------------------stmt-----------------------------
-
-stmt -> expStmt
-stmt -> compoundStmt
-stmt -> selectStmt
-stmt -> iterStmt 
-stmt -> returnStmt
-stmt -> breakStmt
-expStmt -> exp ;
-expStmt -> ;
-compoundStmt -> { localDecls stmtList }
-localDecls -> localDecls^
-localDecls^ -> scopedVarDecl localDecls^
-localDecls^ -> @
-stmtList -> stmtList^
-stmtList^ -> stmt stmtList^
-stmtList^ -> @
-selectStmt -> if ( simpleExp ) { stmt }
-selectStmt -> if ( simpleExp ) { stmt } else { stmt }
-iterStmt -> while ( simpleExp ) { stmt }
-iterStmt -> for ( expStmt expStmt exp ) { stmt }
-returnStmt -> return ;
-returnStmt -> return exp ; 
-breakStmt -> break ;
-
-----------------------expr------------------------------------
-
-exp -> mutable = exp
-exp -> mutable += exp
-exp -> mutable −= exp
-exp -> mutable ++
-exp -> mutable −−
-exp -> simpleExp
-simpleExp -> andExp simpleExp^
-andExp -> unaryRelExp andExp^
-simpleExp^ -> || andExp simpleExp^ 
-simpleExp^ -> @
-andExp^ -> && unaryRelExp andExp^
-andExp^ -> @ 
-unaryRelExp -> ! unaryRelExp
-unaryRelExp -> relExp 
-relExp -> minmaxExp relop minmaxExp
-relExp -> minmaxExp  
-relop -> <=
-relop -> <
-relop -> >
-relop -> >=
-relop -> ==
-relop -> !=
-
-
-minmaxExp -> sumExp minmaxExp^
-sumExp -> mulExp sumExp^
-sumop -> +
-sumop -> −
-mulExp -> unaryExp mulExp^
-minmaxExp^ -> minmaxop sumExp minmaxExp^
-minmaxExp^ -> @
-sumExp^ -> sumop mulExp sumExp^
-sumExp^ -> @
-mulExp^ -> mulop unaryExp mulExp^
-mulExp^ -> @
-mulop -> ∗
-mulop -> /
-mulop -> %
-
-
-unaryExp -> unaryop unaryExp
-unaryExp -> factor 
-unaryop -> −
-unaryop -> ∗
-unaryop -> ? 
-factor -> immutable
-factor -> mutable 
-mutable -> ID
-mutable -> ID [ exp ] 
-immutable -> ( exp )
-immutable -> call
-immutable -> constant 
-call -> ID ( args ) 
-args -> argList
-args -> @ 
-argList -> exp argList^
-argList^ -> , exp argList^
-argList^ -> @
-constant -> NUMCONST
-constant -> CHARCONST
-constant -> STRINGCONST
-constant -> true
-constant -> false
-
+mainStatement -> int main ( ) { statement 
+statement -> labeled-statement
+statement -> compound-statement
+statement -> selection-statement
+statement -> iteration-statement
+statement -> jump-statement
+statement -> initialize-statement
+semicolon -> ; semicolon-temp
+semicolon-temp -> statement 
+semicolon-temp -> brace
+brace -> } brace-temp
+brace-temp -> statement
+brace-temp -> }
+brace-temp -> @
+labeled-statement -> ID labeled-statement-temp
+labeled-statement-temp -> calculation expression-statement semicolon
+labeled-statement-temp -> ++ semicolon 
+labeled-statement-temp -> -- semicolon 
+calculation -> =
+calculation -> +=
+calculation -> -=
+calculation -> *=
+calculation -> /=
+operation -> +
+operation -> -
+operation -> *
+operation -> /
+operation -> %
+expression-statement -> Number exp-st
+expression-statement -> ID exp-st
+exp-st -> @
+exp-st -> operation expression-statement
+initialize-statement -> type ID initialize-statement-temp
+initialize-statement-temp -> semicolon
+initialize-statement-temp -> = expression-statement semicolon
+type -> int
+type -> float
+type -> char
+type -> double
+compound-statement -> { statement 
+selection-statement -> if ( condition ) statement
+condition -> expression-statement condition-temp
+condition-temp -> comparison expression-statement
+condition-temp -> @
+comparison -> ==
+comparison -> >=
+comparison -> <= 
+comparison -> !=
+comparison -> >
+comparison -> <
+iteration-statement -> while ( condition ) statement
+iteration-statement -> for ( for-init-statement ; condition ; for-process ) statement
+for-init-statement -> type ID = expression-statement
+for-init-statement -> ID
+for-process -> ID steps
+steps -> ++
+steps -> --
+steps -> calculation var
+var -> ID
+var -> Number
+jump-statement -> break semicolon 
+jump-statement -> continue semicolon 
+jump-statement ->  return expression-statement semicolon 
