@@ -1,3 +1,6 @@
+from lib2to3.pgen2 import token
+from mimetypes import init
+from msilib.schema import Error
 import sys , os , uuid
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Lexical'))
 import lexical
@@ -11,7 +14,6 @@ tokens , token_type = lexical.main()
 
 
 
-
 TERMINALS = ['main','printf','true', 'false' ,  'CHARCONST' , 'String', '?','@','int' , 'float' , 'char' , 'double' , 'ID', 'Number' , 'if' , 'else' , 'while' , 'for' , 'break', 'continue' , 'case' , 'switch' , 'static' , 'return', ")" , "(" , ":",  ',',  ';', '{', '}', '=', '<', '>', '+', '-', '*', '/', '%', '&', '|', '!', '++','--','==', '*=','/=' ,'+=', '-=' , '||' , '&&', '[', ']' , '<=' , '>=' , '!=']
 NON_TERMINALS = []
 
@@ -21,6 +23,31 @@ follows = dict()
 productions = dict()
 table = dict()
 input = str()
+
+class ParseError(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'ParseError, {0} '.format(self.message)
+        else:
+            return 'MyCustomError has been raised'
+class TypeCheckError(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'TypeCheckError, {0} '.format(self.message)
+        else:
+            return 'MyCustomError has been raised'
 
 def get_input():
     global input
@@ -67,6 +94,12 @@ def create_table():
         table[nonterminal] = rule
 
 def parse():
+
+    types = []
+    ids = []
+    t1 = ''
+    t2 = ''
+
     nodes = dict()
     stack = []
     stack.append('$')
@@ -83,15 +116,22 @@ def parse():
         found = False
         while(not found):
             print(stack)
+            if (t1 != t2 and t1 != '' and t2 != ''):
+                raise TypeCheckError('missmatch in types')
             if token_type[i] in ['keyword' , 'operator']:
                 if stack[-1] == tokens[i]:
                     found = True
-                    stack.pop()
+                    n = stack.pop()
+                    if n == ';':
+                        t1 = ''
+                        t2 = ''
                     matched += tokens[i]
                 else:
                     n = stack.pop()
                     try:
                         prods = table[n][tokens[i]].split()
+                        if n == 'type':
+                            types.append(prods[0])
                     except KeyError:
                         return False
                     for prod in reversed(prods):
@@ -108,13 +148,23 @@ def parse():
             else:
                 if stack[-1] == token_type[i]:
                     found=  True
-                    stack.pop()
+                    n= stack.pop()
+                    if n == 'ID':
+                        if tokens[i] not in ids:
+                            ids.append(tokens[i])
+                        else:
+                            if t1 == '': t1 = types[ids.index(tokens[i])]
+                            else: t2 = types[ids.index(tokens[i])]
+                    elif n == 'String':
+                        t2 = 'String'
                     matched += tokens[i]
                     continue
                 else:
                     n = stack.pop()
                     try:
                         prods = table[n][token_type[i]].split()
+                        if n == 'type':
+                            types.append(prods[0])
                     except KeyError:
                         return False
                     for prod in reversed(prods):
@@ -127,9 +177,6 @@ def parse():
                         stack.pop()
     return True
   
-def draw_tree():
-    pass
-
 def find_nonTerminals():
     for line in input.splitlines():
         ter = line.split('->')[0].strip()
@@ -183,8 +230,6 @@ def follow(nonterminal):
     return follows[nonterminal]
 
 
-
-
 def main():
     get_input()
     find_nonTerminals()
@@ -207,16 +252,11 @@ def main():
 
     create_prods_dict()
     create_table()
-    # print(tokens)
-    # print(token_type)
-    # print()
+    if parse():
+        dot.render(directory='doctest-output', view=True)
+    else:
+        raise ParseError('error in parsing')
 
-    
-    print(parse())
-    dot.render(directory='doctest-output', view=True)
-    # print(table['declList^'])
-    # print(firsts['declList'])
-    # print(follows['declList'])
 
 
 if __name__ == '__main__':

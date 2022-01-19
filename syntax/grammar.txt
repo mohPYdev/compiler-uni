@@ -27,6 +27,7 @@ operation -> *
 operation -> /
 operation -> %
 expression-statement -> Number exp-st
+expression-statement -> String exp-st
 expression-statement -> ID exp-st
 exp-st -> @
 exp-st -> operation expression-statement
