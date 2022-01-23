@@ -1,64 +1,64 @@
-mainStatement -> int main ( ) { statement 
-statement -> labeled-statement
-statement -> compound-statement
-statement -> selection-statement
-statement -> iteration-statement
-statement -> jump-statement
-statement -> initialize-statement
-semicolon -> ; semicolon-temp
-semicolon-temp -> statement 
-semicolon-temp -> brace
-brace -> } brace-temp
-brace-temp -> statement
-brace-temp -> }
-brace-temp -> @
-labeled-statement -> ID labeled-statement-temp
-labeled-statement-temp -> calculation expression-statement semicolon
-labeled-statement-temp -> ++ semicolon 
-labeled-statement-temp -> -- semicolon 
-calculation -> =
-calculation -> +=
-calculation -> -=
-calculation -> *=
-calculation -> /=
-operation -> +
-operation -> -
-operation -> *
-operation -> /
-operation -> %
-expression-statement -> Number exp-st
-expression-statement -> String exp-st
-expression-statement -> ID exp-st
-exp-st -> @
-exp-st -> operation expression-statement
-initialize-statement -> type ID initialize-statement-temp
-initialize-statement-temp -> semicolon
-initialize-statement-temp -> = expression-statement semicolon
+InitiateSt -> int main ( ) { statement
+statement -> SimpleSt
+statement -> CompoundSt
+statement -> ConditionSt
+statement -> LoopSt
+statement -> CtrlSt
+statement -> Decl
+semicolon -> ; SecondarySt
+SecondarySt -> statement
+SecondarySt -> Scope
+Scope -> } Scope2
+Scope2 -> statement
+Scope2 -> }
+Scope2 -> @
+SimpleSt -> ID SimpleSt2
+SimpleSt2 -> SpecOps ExpressSt semicolon
+SimpleSt2 -> ++ semicolon
+SimpleSt2 -> -- semicolon
+SpecOps -> =
+SpecOps -> +=
+SpecOps -> -=
+SpecOps -> *=
+SpecOps -> /=
+Ops -> +
+Ops -> -
+Ops -> *
+Ops -> /
+Ops -> %
+ExpressSt -> Number Exp
+ExpressSt -> String Exp
+ExpressSt -> ID Exp
+Exp -> @
+Exp -> Ops ExpressSt
+Decl -> type ID Decl2
+Decl2 -> semicolon
+Decl2 -> = ExpressSt semicolon
 type -> int
 type -> float
 type -> char
 type -> double
-compound-statement -> { statement 
-selection-statement -> if ( condition ) statement
-condition -> expression-statement condition-temp
-condition-temp -> comparison expression-statement
-condition-temp -> @
-comparison -> ==
-comparison -> >=
-comparison -> <= 
-comparison -> !=
-comparison -> >
-comparison -> <
-iteration-statement -> while ( condition ) statement
-iteration-statement -> for ( for-init-statement ; condition ; for-process ) statement
-for-init-statement -> type ID = expression-statement
-for-init-statement -> ID
-for-process -> ID steps
+CompoundSt -> { statement
+ConditionSt -> if ( ConditionSt2 ) statement
+ConditionSt2 -> ExpressSt ConditionSt3
+ConditionSt3 -> CompOps ExpressSt
+ConditionSt3 -> @
+CompOps -> ==
+CompOps -> >=
+CompOps -> <=
+CompOps -> !=
+CompOps -> >
+CompOps -> <
+LoopSt -> while ( ConditionSt2 ) statement
+LoopSt -> for ( LoopInit ; ConditionSt2 ; ForSt ) statement
+LoopInit -> type ID = ExpressSt
+LoopInit -> ID
+ForSt -> ID steps
 steps -> ++
 steps -> --
-steps -> calculation var
+steps -> SpecOps var
 var -> ID
 var -> Number
-jump-statement -> break semicolon 
-jump-statement -> continue semicolon 
-jump-statement ->  return expression-statement semicolon 
+CtrlSt -> break semicolon
+CtrlSt -> continue semicolon
+CtrlSt ->  return ExpressSt semicolon

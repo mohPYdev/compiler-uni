@@ -21,7 +21,7 @@ def Preprocessor(filename):
                 lines[lines.index(line)] = line.replace(line[line.index('//'):], '')
 
             elif line.startswith('#include'):
-                Preprocessor('./lexical/' + line.split()[1])
+                Preprocessor('./c_files/' + line.split()[1])
                 lines[lines.index(line)] = ""
 
 
@@ -39,7 +39,12 @@ def Preprocessor(filename):
     # for line in lines:
     #     print(line)
 
-    with open('./lexical/cleanedSource.txt' , 'w') as file:
+    # with open('./lexical/cleanedSource.txt' , 'w') as file:
+    #     file.writelines(lines)
+    
+    filename = filename.split('.')[0]
+    os.mkdir(f'../output/{filename}')
+    with open(f'../output/{filename}/{filename}.txt' , 'w') as file:
         file.writelines(lines)
 
 

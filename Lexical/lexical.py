@@ -38,12 +38,14 @@ states = [
     State(True , ''),State(True , ''), State(True , 'String') , State(True , 'operator')
     ]
 
-def main():
+def main(fname):
 
     # read the file
     source_text = ''
-    Preprocessor.Preprocessor('./lexical/source.txt')
-    with open('./lexical/cleanedSource.txt' , 'r') as f:
+    # Preprocessor.Preprocessor('./lexical/source.txt')
+    # with open('./lexical/cleanedSource.txt' , 'r') as f:
+    fname = fname.split('.')[0]
+    with open(f'../output/{fname}/{fname}.txt' , 'r') as f:
         source_text = f.read()
         # print(source_text)
         f.close()
@@ -228,6 +230,10 @@ def main():
         # for i in range(len(tokens)):
         #     print(tokens[i] , ' : ' , type_token[i])
         
+        with open(f'../output/{fname}/{fname}-lexical.txt' , 'w') as f:
+            f.write(str(tokens))
+            f.write(str(type_token))
+            f.close()
         return tokens , type_token
 
 

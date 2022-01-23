@@ -1,16 +1,13 @@
-from lib2to3.pgen2 import token
-from mimetypes import init
-from msilib.schema import Error
 import sys , os , uuid
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Lexical'))
-import lexical
+# sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Lexical'))
+# import lexical
 
 import graphviz
 dot = graphviz.Digraph('round-table', comment='The Round Table')  
 
 
 # get the tokens from lexical analyser
-tokens , token_type = lexical.main()
+# tokens , token_type = lexical.main()
 
 
 
@@ -93,7 +90,7 @@ def create_table():
         # add the dictionary in the table
         table[nonterminal] = rule
 
-def parse():
+def parse(tokens, token_type):
 
     types = []
     ids = []
@@ -103,9 +100,9 @@ def parse():
     nodes = dict()
     stack = []
     stack.append('$')
-    stack.append('mainStatement')
-    nodes['mainStatement'] = str(uuid.uuid4())
-    dot.node(nodes['mainStatement'] , 'mainStatement')
+    stack.append('InitiateSt')
+    nodes['InitiateSt'] = str(uuid.uuid4())
+    dot.node(nodes['InitiateSt'] , 'InitiateSt')
 
     tokens.append('$')
     token_type.append('operator')
@@ -230,7 +227,7 @@ def follow(nonterminal):
     return follows[nonterminal]
 
 
-def main():
+def main(tokens, token_type, file):
     get_input()
     find_nonTerminals()
     for nonterminal in NON_TERMINALS: 
@@ -240,7 +237,7 @@ def main():
     for nonterminal in NON_TERMINALS:       
         first(nonterminal)
 
-    follows['mainStatement']= { '$' }
+    follows['InitiateSt']= { '$' }
     for nonterminal in NON_TERMINALS:
         follow(nonterminal)
 
@@ -252,8 +249,9 @@ def main():
 
     create_prods_dict()
     create_table()
-    if parse():
-        dot.render(directory='doctest-output', view=True)
+    if parse(tokens, token_type):
+        file = file.split('.')[0]
+        dot.render(directory=f'../output/{file}/parser-output', view=False)
     else:
         raise ParseError('error in parsing')
 
